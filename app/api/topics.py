@@ -26,7 +26,7 @@ from app.services import TopicsService
 from app.utils.responses import generate_responses
 
 router = APIRouter(prefix="/topics", tags=["Темы"])
-admin_router = APIRouter(prefix="/topics", tags=["Для админстрации"])
+admin_router = APIRouter(prefix="/topics", tags=["Для администрации"])
 
 
 @admin_router.get(

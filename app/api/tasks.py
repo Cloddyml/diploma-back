@@ -227,6 +227,7 @@ async def partial_edit_task(
     status_code=status.HTTP_200_OK,
     summary="Удаление существующего задания",
     responses=generate_responses(
+        TopicNotFoundHTTPException,
         TaskNotFoundHTTPException,
     ),
 )
@@ -236,7 +237,9 @@ async def delete_task(
     task_id: int = Path(description="ID задания", gt=0),
 ):
     try:
-        await TasksService(db).delete_task(task_id=task_id)
+        await TasksService(db).delete_task(task_id=task_id, topic_slug=topic_slug)
+    except TopicNotFoundException:
+        raise TopicNotFoundHTTPException
     except TaskNotFoundException:
         raise TaskNotFoundHTTPException
     return SUCCESS_RESPONSE

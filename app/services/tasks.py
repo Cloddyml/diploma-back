@@ -87,7 +87,8 @@ class TasksService(BaseService):
         except CannotBeEmptyException as ex:
             raise CannotBeEmptyTaskException from ex
 
-    async def delete_task(self, task_id: int) -> None:
+    async def delete_task(self, task_id: int, topic_slug: str) -> None:
+        topic_id = await self._resolve_topic_id(topic_slug)
         try:
             await self.db.tasks.delete(id=task_id)
             await self.db.commit()
