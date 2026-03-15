@@ -1,6 +1,7 @@
 from app.models import TopicsOrm
 from app.schemas.topics import TopicDto, TopicPublishedDto
 from app.services.base import BaseService
+from app.utils.schema_validation import validate_schema
 
 
 class TopicsService(BaseService):
@@ -9,6 +10,4 @@ class TopicsService(BaseService):
 
     async def get_all_published_topics(self) -> list[TopicPublishedDto]:
         topics = await self.db.topics.get_filtered(TopicsOrm.is_published)
-        return [
-            TopicPublishedDto.model_validate(topic.model_dump()) for topic in topics
-        ]
+        return [validate_schema(topic, TopicPublishedDto) for topic in topics]
