@@ -28,7 +28,9 @@ from app.services import TasksService
 from app.utils.responses import generate_responses
 
 router = APIRouter(prefix="/topics/{topic_slug}/tasks", tags=["Задания"])
-admin_router = APIRouter(prefix="/topics/{topic_slug}/tasks", tags=["Для админстрации"])
+admin_router = APIRouter(
+    prefix="/topics/{topic_slug}/tasks", tags=["Для администрации"]
+)
 
 
 @admin_router.get(

@@ -29,6 +29,7 @@ class TasksService(BaseService):
         return topic.id
 
     async def get_all_tasks_by_topic(self, topic_slug: str) -> list[TaskDto]:
+        await self._resolve_topic_id(topic_slug)
         tasks = await self.db.tasks.get_all_tasks_by_topic_slug(slug=topic_slug)
         if not tasks:
             raise TaskNotFoundException
@@ -37,6 +38,7 @@ class TasksService(BaseService):
     async def get_all_published_tasks_by_topic(
         self, topic_slug: str
     ) -> list[TaskPublishedDto]:
+        await self._resolve_topic_id(topic_slug)
         tasks = await self.db.tasks.get_published_tasks_by_topic_slug(slug=topic_slug)
         if not tasks:
             raise TaskNotFoundException

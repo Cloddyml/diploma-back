@@ -7,10 +7,12 @@ class TaskAddRequestDto(BaseModel):
     title: str = Field(max_length=255)
     description: str
     starter_code: str | None = Field(None)
+    solution_code: str | None = Field(None)
     order_index: int = Field(0, ge=0)
     time_limit_sec: int = Field(10)
     memory_limit_mb: int = Field(128)
     is_published: bool = Field(False)
+    topic_id: int | None = Field(None)
 
     @field_validator("title", "description", mode="before")
     @classmethod
@@ -31,10 +33,12 @@ class TaskPutRequestDto(BaseModel):
     title: str = Field(max_length=255)
     description: str
     starter_code: str | None = None
+    solution_code: str | None = None
     order_index: int = Field(ge=0)
     time_limit_sec: int
     memory_limit_mb: int
     is_published: bool
+    topic_id: int | None = Field(None)
 
     @field_validator("title", "description", mode="before")
     @classmethod
@@ -59,6 +63,7 @@ class TaskPatchRequestDto(BaseModel):
     time_limit_sec: int | None = None
     memory_limit_mb: int | None = None
     is_published: bool | None = None
+    topic_id: int | None = Field(None)
 
     @field_validator("title", "description", mode="before")
     @classmethod
