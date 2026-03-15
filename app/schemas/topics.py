@@ -42,7 +42,7 @@ class TopicAddRequestDto(BaseModel):
 class TopicPutRequestDto(BaseModel):
     slug: Annotated[str, StringConstraints(max_length=100, to_lower=True)]
     title: str = Field(max_length=255)
-    content: str
+    content: str | None = Field(None)  # ← исправлено
     order_index: int = Field(ge=0)
     is_published: bool
 

@@ -3,14 +3,12 @@ from fastapi import APIRouter, Body, Path, status
 from app.api.deps.database import DBDep
 from app.exceptions.excs import (
     CannotBeEmptyTopicException,
-    EmptyUpdateDataException,
     EmptyUpdateTopicDataException,
     TopicAlreadyExistsException,
     TopicNotFoundException,
 )
 from app.exceptions.http_excs import (
     CannotBeEmptyTopicHTTPException,
-    EmptyUpdateDataHTTPException,
     EmptyUpdateTopicDataHTTPException,
     TopicAlreadyExistsHTTPException,
     TopicNotFoundHTTPException,
