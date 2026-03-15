@@ -23,6 +23,10 @@ class TopicNotFoundException(ObjectNotFoundException):
     detail = "Такой темы не существует"
 
 
+class TaskNotFoundException(ObjectNotFoundException):
+    detail = "Задач к этой теме не существует"
+
+
 # --------------------- EmptyUpdateDataExceptions ---------------------
 class EmptyUpdateDataException(AIStudingException):
     detail = "Нет данных для обновления"

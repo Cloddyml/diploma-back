@@ -31,6 +31,11 @@ class TopicNotFoundHTTPException(ObjectNotFoundHTTPException):
     detail = "Такой темы не существует"
 
 
+class TaskNotFoundHTTPException(ObjectNotFoundHTTPException):
+    status_code = status.HTTP_404_NOT_FOUND
+    detail = "Задач к этой теме не существует"
+
+
 # --------------------- EmptyUpdateDataHTTPExceptions ---------------------
 class EmptyUpdateDataHTTPException(AIStudingHTTPException):
     status_code = status.HTTP_422_UNPROCESSABLE_CONTENT

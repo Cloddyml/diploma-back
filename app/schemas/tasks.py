@@ -18,3 +18,9 @@ class TaskDto(TaskAddRequestDto):
     id: int
     solution_code: str | None = Field(None)
     created_at: datetime
+
+
+class TaskPublishedDto(BaseModel):
+    title: str = Field(max_length=255)
+    description: str
+    order_index: int = Field(0)
