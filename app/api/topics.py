@@ -26,21 +26,21 @@ from app.services import TopicsService
 from app.utils.responses import generate_responses
 
 router = APIRouter(prefix="/topics", tags=["Темы"])
+admin_router = APIRouter(prefix="/topics", tags=["Для админстрации"])
 
 
-@router.get(
+@admin_router.get(
     "",
     response_model=list[TopicDto],
     status_code=status.HTTP_200_OK,
     summary="Получение списка всех тем",
-    tags=["Для админстрации"],
 )
 async def get_all_topics(db: DBDep):
     return await TopicsService(db).get_all_topics()
 
 
 @router.get(
-    "_published",
+    "/published",
     response_model=list[TopicPublishedDto],
     status_code=status.HTTP_200_OK,
     summary="Получение списка всех опубликованных тем",
@@ -49,7 +49,7 @@ async def get_all_published_topics(db: DBDep):
     return await TopicsService(db).get_all_published_topics()
 
 
-@router.post(
+@admin_router.post(
     "",
     response_model=StatusResponse,
     status_code=status.HTTP_200_OK,
@@ -57,7 +57,6 @@ async def get_all_published_topics(db: DBDep):
         TopicAlreadyExistsHTTPException,
     ),
     summary="Добавление новой темы",
-    tags=["Для админстрации"],
 )
 async def add_new_topic(
     db: DBDep,
@@ -93,7 +92,7 @@ async def add_new_topic(
     return SUCCESS_RESPONSE
 
 
-@router.put(
+@admin_router.put(
     "/{topic_id}",
     response_model=StatusResponse,
     status_code=status.HTTP_200_OK,
@@ -103,7 +102,6 @@ async def add_new_topic(
         CannotBeEmptyTopicHTTPException,
     ),
     summary="Полное изменение существующей темы",
-    tags=["Для админстрации"],
 )
 async def edit_topic(
     db: DBDep,
@@ -134,7 +132,7 @@ async def edit_topic(
     return SUCCESS_RESPONSE
 
 
-@router.patch(
+@admin_router.patch(
     "/{topic_id}",
     response_model=StatusResponse,
     status_code=status.HTTP_200_OK,
@@ -144,7 +142,6 @@ async def edit_topic(
         CannotBeEmptyTopicHTTPException,
     ),
     summary="Частичное обновление существующей темы",
-    tags=["Для админстрации"],
 )
 async def partial_edit_topic(
     db: DBDep,
@@ -177,7 +174,7 @@ async def partial_edit_topic(
     return SUCCESS_RESPONSE
 
 
-@router.delete(
+@admin_router.delete(
     "/{topic_id}",
     response_model=StatusResponse,
     status_code=status.HTTP_200_OK,
@@ -185,7 +182,6 @@ async def partial_edit_topic(
         TopicNotFoundHTTPException,
     ),
     summary="Удаление существующей темы",
-    tags=["Для админстрации"],
 )
 async def delete_topic(
     db: DBDep,
