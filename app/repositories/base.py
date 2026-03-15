@@ -1,4 +1,4 @@
-from typing import Any, Sequence, Type
+from typing import Any
 
 from pydantic import BaseModel
 from sqlalchemy import delete as sa_delete
@@ -10,8 +10,8 @@ from app.repositories.mappers.base import DataMapper
 
 
 class BaseRepository:
-    model: Type[Base]  # pyright: ignore[reportUninitializedInstanceVariable, reportDeprecated]  # noqa: UP006
-    mapper: Type[DataMapper]  # pyright: ignore[reportUninitializedInstanceVariable, reportDeprecated]  # noqa: UP006
+    model: type[Base]  # pyright: ignore[reportUninitializedInstanceVariable]  # noqa: UP006
+    mapper: type[DataMapper]  # pyright: ignore[reportUninitializedInstanceVariable]  # noqa: UP006
     session: AsyncSession
 
     def __init__(self, session: AsyncSession):
@@ -24,7 +24,7 @@ class BaseRepository:
             self.mapper.map_to_domain_entity(model) for model in result.scalars().all()
         ]
 
-    async def get_all(self, *args, **kwargs) -> list[BaseModel | Any]:
+    async def get_all(self) -> list[BaseModel | Any]:
         return await self.get_filtered()
 
     async def get_one_or_none(self, **filter_by) -> BaseModel | None | Any:
