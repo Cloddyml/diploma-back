@@ -85,11 +85,7 @@ class BaseRepository:
         if not values:
             raise EmptyUpdateDataException
 
-        update_stmt = (
-            update(self.model)
-            .filter_by(**filter_by)
-            .values(**data.model_dump(exclude_unset=exclude_unset))
-        )
+        update_stmt = update(self.model).filter_by(**filter_by).values(**values)
         try:
             await self.session.execute(update_stmt)
         except IntegrityError as ex:
