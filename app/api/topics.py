@@ -37,7 +37,8 @@ admin_router = APIRouter(prefix="/topics", tags=["Для администрац�
     summary="Получение списка всех тем",
 )
 @cache(expire=10)
-async def get_all_topics(db: DBDep):
+async def get_all_topics(db: DBDep) -> list[TopicDto]:
+    print("Иду в БД")
     return await TopicsService(db).get_all_topics()
 
 

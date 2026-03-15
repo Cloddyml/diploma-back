@@ -9,10 +9,17 @@ class RedisManager:
         self.port = port
 
     async def connect(self):
-        self._redis = await redis.Redis(host=self.host, port=self.port)
+        self._redis = await redis.Redis(
+            host=self.host,
+            port=self.port,
+        )
+
+    @property
+    def client(self) -> redis.Redis:
+        return self._redis
 
     async def set(self, key: str, value: str, expire: int | None = None):
-        if expire:
+        if expire is not None:
             await self._redis.set(key, value, ex=expire)
         else:
             await self._redis.set(key, value)
@@ -25,4 +32,4 @@ class RedisManager:
 
     async def close(self):
         if self._redis:
-            await self._redis.close()
+            await self._redis.aclose()
