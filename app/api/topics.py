@@ -1,14 +1,31 @@
-from fastapi import APIRouter, Body, status
+from fastapi import APIRouter, Body, Path, status
 
 from app.api.deps.database import DBDep
+from app.exceptions.excs import (
+    CannotBeEmptyTopicException,
+    EmptyUpdateDataException,
+    EmptyUpdateTopicDataException,
+    TopicAlreadyExistsException,
+    TopicNotFoundException,
+)
+from app.exceptions.http_excs import (
+    CannotBeEmptyTopicHTTPException,
+    EmptyUpdateDataHTTPException,
+    EmptyUpdateTopicDataHTTPException,
+    TopicAlreadyExistsHTTPException,
+    TopicNotFoundHTTPException,
+)
 from app.schemas import (
     SUCCESS_RESPONSE,
     StatusResponse,
     TopicAddRequestDto,
     TopicDto,
+    TopicPatchRequestDto,
     TopicPublishedDto,
+    TopicPutRequestDto,
 )
 from app.services import TopicsService
+from app.utils.responses import generate_responses
 
 router = APIRouter(prefix="/topics", tags=["Темы"])
 
@@ -38,6 +55,9 @@ async def get_all_published_topics(db: DBDep):
     "",
     response_model=StatusResponse,
     status_code=status.HTTP_200_OK,
+    responses=generate_responses(
+        TopicAlreadyExistsHTTPException,
+    ),
     summary="Добавление новой темы",
     tags=["Для админстрации"],
 )
@@ -68,5 +88,113 @@ async def add_new_topic(
         }
     ),
 ):
-    await TopicsService(db).add_topic(topic_data)
+    try:
+        await TopicsService(db).add_topic(topic_data=topic_data)
+    except TopicAlreadyExistsException:
+        raise TopicAlreadyExistsHTTPException
+    return SUCCESS_RESPONSE
+
+
+@router.put(
+    "/{topic_id}",
+    response_model=StatusResponse,
+    status_code=status.HTTP_200_OK,
+    responses=generate_responses(
+        TopicNotFoundHTTPException,
+        EmptyUpdateTopicDataHTTPException,
+        CannotBeEmptyTopicHTTPException,
+    ),
+    summary="Полное изменение существующей темы",
+    tags=["Для админстрации"],
+)
+async def edit_topic(
+    db: DBDep,
+    topic_id: int = Path(description="ID темы", gt=0),
+    topic_data: TopicPutRequestDto = Body(
+        openapi_examples={
+            "1": {
+                "summary": "Тема 1",
+                "value": {
+                    "slug": "some libRary",
+                    "title": "Еще библиотека",
+                    "content": "",
+                    "order_index": 6,
+                    "is_published": True,
+                },
+            },
+        }
+    ),
+):
+    try:
+        await TopicsService(db).edit_topic(topic_id=topic_id, topic_data=topic_data)
+    except EmptyUpdateTopicDataException:
+        raise EmptyUpdateTopicDataHTTPException
+    except TopicNotFoundException:
+        raise TopicNotFoundHTTPException
+    except CannotBeEmptyTopicException:
+        raise CannotBeEmptyTopicHTTPException
+    return SUCCESS_RESPONSE
+
+
+@router.patch(
+    "/{topic_id}",
+    response_model=StatusResponse,
+    status_code=status.HTTP_200_OK,
+    responses=generate_responses(
+        TopicNotFoundHTTPException,
+        EmptyUpdateTopicDataHTTPException,
+        CannotBeEmptyTopicHTTPException,
+    ),
+    summary="Частичное обновление существующей темы",
+    tags=["Для админстрации"],
+)
+async def partial_edit_topic(
+    db: DBDep,
+    topic_id: int = Path(description="ID темы", gt=0),
+    topic_data: TopicPatchRequestDto = Body(
+        openapi_examples={
+            "1": {
+                "summary": "Тема 1",
+                "value": {
+                    "slug": "some libRary",
+                    "title": "Еще библиотека",
+                    "content": "",
+                    "order_index": 6,
+                    "is_published": True,
+                },
+            },
+        }
+    ),
+):
+    try:
+        await TopicsService(db).partial_edit_topic(
+            topic_id=topic_id, topic_data=topic_data
+        )
+    except EmptyUpdateTopicDataException:
+        raise EmptyUpdateTopicDataHTTPException
+    except TopicNotFoundException:
+        raise TopicNotFoundHTTPException
+    except CannotBeEmptyTopicException:
+        raise CannotBeEmptyTopicHTTPException
+    return SUCCESS_RESPONSE
+
+
+@router.delete(
+    "/{topic_id}",
+    response_model=StatusResponse,
+    status_code=status.HTTP_200_OK,
+    responses=generate_responses(
+        TopicNotFoundHTTPException,
+    ),
+    summary="Удаление существующей темы",
+    tags=["Для админстрации"],
+)
+async def delete_topic(
+    db: DBDep,
+    topic_id: int = Path(description="ID темы", gt=0),
+):
+    try:
+        await TopicsService(db).delete_topic(topic_id=topic_id)
+    except TopicNotFoundException:
+        raise TopicNotFoundHTTPException
     return SUCCESS_RESPONSE

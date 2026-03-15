@@ -17,6 +17,6 @@ class DataMapper:
         return cls.schema.model_validate(data, from_attributes=True)
 
     @classmethod
-    def map_to_persistence_entity(cls, data: BaseModel) -> dict[Any, Any]:  # pyright: ignore[reportExplicitAny]
+    def map_to_persistence_entity(cls, data: BaseModel, **kwargs) -> dict[Any, Any]:  # pyright: ignore[reportExplicitAny]
         """Pydantic-схема → dict для INSERT/UPDATE"""
-        return data.model_dump()
+        return data.model_dump(**kwargs)

@@ -1,11 +1,19 @@
 from typing import Any
 
+from asyncpg.exceptions import NotNullViolationError, UniqueViolationError
 from pydantic import BaseModel
 from sqlalchemy import delete as sa_delete
 from sqlalchemy import insert, select, update
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import Base
+from app.exceptions.excs import (
+    CannotBeEmptyException,
+    EmptyUpdateDataException,
+    ObjectAlreadyExistsException,
+    ObjectNotFoundException,
+)
 from app.repositories.mappers.base import DataMapper
 
 
@@ -43,27 +51,56 @@ class BaseRepository:
 
         return self.mapper.map_to_domain_entity(model)
 
-    async def add(self, data: BaseModel) -> BaseModel | Any:
+    async def add(self, data: BaseModel) -> None:
         add_data_stmt = (
             insert(self.model)
             .values(**self.mapper.map_to_persistence_entity(data))
             .returning(self.model)
         )
-        await self.session.execute(add_data_stmt)
+        try:
+            await self.session.execute(add_data_stmt)
+        except IntegrityError as ex:
+            if isinstance(ex.orig.__cause__, UniqueViolationError):
+                raise ObjectAlreadyExistsException from ex
+            else:
+                raise ex
         # result = await self.session.execute(add_data_stmt)
         # model = result.scalars().one()
         # return self.mapper.map_to_domain_entity(model)
 
     async def edit(
-        self, data: BaseModel, exclude_unset: bool = False, **filter_by
+        self,
+        data: BaseModel,
+        exclude_unset: bool = False,
+        exclude_none: bool = False,
+        **filter_by,
     ) -> None:
+        obj = await self.get_one_or_none(**filter_by)
+        if obj is None:
+            raise ObjectNotFoundException
+        print(data)
+        values = self.mapper.map_to_persistence_entity(
+            data=data, exclude_unset=exclude_unset, exclude_none=exclude_none
+        )
+        if not values:
+            raise EmptyUpdateDataException
+
         update_stmt = (
             update(self.model)
             .filter_by(**filter_by)
             .values(**data.model_dump(exclude_unset=exclude_unset))
         )
-        await self.session.execute(update_stmt)
+        try:
+            await self.session.execute(update_stmt)
+        except IntegrityError as ex:
+            if isinstance(ex.orig.__cause__, NotNullViolationError):
+                raise CannotBeEmptyException from ex
+            else:
+                raise ex
 
     async def delete(self, **filter_by) -> None:
+        obj = await self.get_one_or_none(**filter_by)
+        if obj is None:
+            raise ObjectNotFoundException
         delete_stmt = sa_delete(self.model).filter_by(**filter_by)
         await self.session.execute(delete_stmt)

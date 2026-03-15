@@ -1,0 +1,41 @@
+class AIStudingException(Exception):
+    detail = "Неожиданная ошибка"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(self.detail, *args, **kwargs)
+
+
+# --------------------- AlreadyExistsExceptions ---------------------
+class ObjectAlreadyExistsException(AIStudingException):
+    detail = "Такой объект уже существует"
+
+
+class TopicAlreadyExistsException(AIStudingException):
+    detail = "Такая тема уже существует (slug должен быть уникальным)"
+
+
+# --------------------- NotFoundExceptions ---------------------
+class ObjectNotFoundException(AIStudingException):
+    detail = "Такого объекта не существует"
+
+
+class TopicNotFoundException(ObjectNotFoundException):
+    detail = "Такой темы не существует"
+
+
+# --------------------- EmptyUpdateDataExceptions ---------------------
+class EmptyUpdateDataException(AIStudingException):
+    detail = "Нет данных для обновления"
+
+
+class EmptyUpdateTopicDataException(EmptyUpdateDataException):
+    detail = "Нет данных для обновления темы"
+
+
+# --------------------- CannotBeEmptyExceptions ---------------------
+class CannotBeEmptyException(AIStudingException):
+    detail = "Введенное поле или поля не могут быть пустыми"
+
+
+class CannotBeEmptyTopicException(CannotBeEmptyException):
+    detail = "Введенное поле или поля не могут быть пустыми"
