@@ -12,4 +12,4 @@ class SubmissionDto(BaseModel):
     status: SubmissionStatus
     result: str | None = Field(None)
     error: str | None = Field(None)
-    created_at: datetime = Field(datetime.now())
+    created_at: datetime
