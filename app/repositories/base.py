@@ -78,7 +78,6 @@ class BaseRepository:
         obj = await self.get_one_or_none(**filter_by)
         if obj is None:
             raise ObjectNotFoundException
-        print(data)
         values = self.mapper.map_to_persistence_entity(
             data=data, exclude_unset=exclude_unset, exclude_none=exclude_none
         )
