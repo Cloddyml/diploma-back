@@ -17,8 +17,8 @@ class BaseRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def get_filtered(self, *filter, **filter_by) -> list[BaseModel | Any]:
-        query = select(self.model).filter(*filter).filter_by(**filter_by)
+    async def get_filtered(self, *filters, **filter_by) -> list[BaseModel | Any]:
+        query = select(self.model).filter(*filters).filter_by(**filter_by)
         result = await self.session.execute(query)
         return [
             self.mapper.map_to_domain_entity(model) for model in result.scalars().all()
@@ -45,7 +45,9 @@ class BaseRepository:
 
     async def add(self, data: BaseModel) -> BaseModel | Any:
         add_data_stmt = (
-            insert(self.model).values(**data.model_dump()).returning(self.model)
+            insert(self.model)
+            .values(**self.mapper.map_to_persistence_entity(data))
+            .returning(self.model)
         )
         result = await self.session.execute(add_data_stmt)
         model = result.scalars().one()
