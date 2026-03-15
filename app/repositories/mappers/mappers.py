@@ -6,11 +6,13 @@ from app.models import (
     TopicsOrm,
 )
 from app.repositories.mappers.base import DataMapper
-from app.schemas.ai_interactions import AIInteractionDto
-from app.schemas.submissions import SubmissionDto
-from app.schemas.task_tests import TaskTestDto
-from app.schemas.tasks import TaskDto
-from app.schemas.topics import TopicDto
+from app.schemas import (
+    AIInteractionDto,
+    SubmissionDto,
+    TaskDto,
+    TaskTestDto,
+    TopicDto,
+)
 
 
 class AIInteractionDataMapper(DataMapper):

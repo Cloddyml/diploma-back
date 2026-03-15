@@ -8,7 +8,6 @@ class TaskAddRequestDto(BaseModel):
     title: str = Field(max_length=255)
     description: str
     starter_code: str | None = Field(None)
-    solution_code: str | None = Field(None)
     order_index: int = Field(0)
     time_limit_sec: int = Field(10)
     memory_limit_mb: int = Field(128)
@@ -17,4 +16,5 @@ class TaskAddRequestDto(BaseModel):
 
 class TaskDto(TaskAddRequestDto):
     id: int
+    solution_code: str | None = Field(None)
     created_at: datetime
