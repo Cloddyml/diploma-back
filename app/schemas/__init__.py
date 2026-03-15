@@ -4,10 +4,11 @@ from app.schemas.ai_interactions import (
     AIInteractionTaskHintRequestDto,
     AIInteractionTopicHintRequestDto,
 )
+from app.schemas.responses import SUCCESS_RESPONSE, StatusResponse
 from app.schemas.submissions import SubmissionDto, SubmissionSubmitRequestDto
 from app.schemas.task_tests import TaskTestAddRequestDto, TaskTestDto
 from app.schemas.tasks import TaskAddRequestDto, TaskDto
-from app.schemas.topics import TopicAddRequestDto, TopicDto
+from app.schemas.topics import TopicAddRequestDto, TopicDto, TopicPublishedDto
 
 __all__ = [
     "TopicDto",
@@ -22,4 +23,7 @@ __all__ = [
     "AIInteractionTaskHintRequestDto",
     "AIInteractionTopicHintRequestDto",
     "AIInteractionHintResponseDto",
+    "TopicPublishedDto",
+    "StatusResponse",
+    "SUCCESS_RESPONSE",
 ]

@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 
+SUCCESS_RESPONSE = {"status": "OK"}
+
 
 class ErrorResponse(BaseModel):
     detail: str
