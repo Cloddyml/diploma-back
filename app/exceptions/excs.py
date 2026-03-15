@@ -18,6 +18,10 @@ class TaskAlreadyExistsException(ObjectAlreadyExistsException):
     detail = "Такое задание уже существует"
 
 
+class TaskTestAlreadyExistsException(ObjectAlreadyExistsException):
+    detail = "Такой тест уже существует"
+
+
 # --------------------- NotFoundExceptions ---------------------
 class ObjectNotFoundException(AIStudingException):
     detail = "Такого объекта не существует"
@@ -29,6 +33,10 @@ class TopicNotFoundException(ObjectNotFoundException):
 
 class TaskNotFoundException(ObjectNotFoundException):
     detail = "Задач к этой теме не существует"
+
+
+class TaskTestNotFoundException(ObjectNotFoundException):
+    detail = "Тестов к этому заданию не существует"
 
 
 # --------------------- EmptyUpdateDataExceptions ---------------------
@@ -44,6 +52,10 @@ class EmptyUpdateTaskDataException(EmptyUpdateDataException):
     detail = "Нет данных для обновления задания"
 
 
+class EmptyUpdateTaskTestDataException(EmptyUpdateDataException):
+    detail = "Нет данных для обновления теста"
+
+
 # --------------------- CannotBeEmptyExceptions ---------------------
 class CannotBeEmptyException(AIStudingException):
     detail = "Введенное поле или поля не могут быть пустыми"
@@ -54,4 +66,8 @@ class CannotBeEmptyTopicException(CannotBeEmptyException):
 
 
 class CannotBeEmptyTaskException(CannotBeEmptyException):
+    detail = "Введенное поле или поля не могут быть пустыми"
+
+
+class CannotBeEmptyTaskTestException(CannotBeEmptyException):
     detail = "Введенное поле или поля не могут быть пустыми"

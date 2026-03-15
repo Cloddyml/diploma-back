@@ -23,6 +23,10 @@ class TaskAlreadyExistsHTTPException(ObjectAlreadyExistsHTTPException):
     detail = "Такое задание уже существует"
 
 
+class TaskTestAlreadyExistsHTTPException(ObjectAlreadyExistsHTTPException):
+    detail = "Такой тест уже существует"
+
+
 # --------------------- NotFoundHTTPExceptions ---------------------
 class ObjectNotFoundHTTPException(AIStudingHTTPException):
     status_code = status.HTTP_404_NOT_FOUND
@@ -35,6 +39,10 @@ class TopicNotFoundHTTPException(ObjectNotFoundHTTPException):
 
 class TaskNotFoundHTTPException(ObjectNotFoundHTTPException):
     detail = "Задач к этой теме не существует"
+
+
+class TaskTestNotFoundHTTPException(ObjectNotFoundHTTPException):
+    detail = "Тестов к этому заданию не существует"
 
 
 # --------------------- EmptyUpdateDataHTTPExceptions ---------------------
@@ -51,6 +59,10 @@ class EmptyUpdateTaskDataHTTPException(EmptyUpdateDataHTTPException):
     detail = "Нет данных для обновления задания"
 
 
+class EmptyUpdateTaskTestDataHTTPException(EmptyUpdateDataHTTPException):
+    detail = "Нет данных для обновления теста"
+
+
 # --------------------- CannotBeEmptyHTTPExceptions ---------------------
 class CannotBeEmptyHTTPException(AIStudingHTTPException):
     status_code = status.HTTP_422_UNPROCESSABLE_CONTENT
@@ -62,4 +74,8 @@ class CannotBeEmptyTopicHTTPException(CannotBeEmptyHTTPException):
 
 
 class CannotBeEmptyTaskHTTPException(CannotBeEmptyHTTPException):
+    detail = "Введенное поле или поля не могут быть пустыми"
+
+
+class CannotBeEmptyTaskTestHTTPException(CannotBeEmptyHTTPException):
     detail = "Введенное поле или поля не могут быть пустыми"

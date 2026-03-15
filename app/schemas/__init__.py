@@ -6,7 +6,12 @@ from app.schemas.ai_interactions import (
 )
 from app.schemas.responses import SUCCESS_RESPONSE, StatusResponse
 from app.schemas.submissions import SubmissionDto, SubmissionSubmitRequestDto
-from app.schemas.task_tests import TaskTestAddRequestDto, TaskTestDto
+from app.schemas.task_tests import (
+    TaskTestAddRequestDto,
+    TaskTestDto,
+    TaskTestPatchRequestDto,
+    TaskTestPutRequestDto,
+)
 from app.schemas.tasks import (
     TaskAddRequestDto,
     TaskDto,
@@ -34,6 +39,8 @@ __all__ = [
     "TaskPatchRequestDto",
     "TaskTestDto",
     "TaskTestAddRequestDto",
+    "TaskTestPutRequestDto",
+    "TaskTestPatchRequestDto",
     "SubmissionDto",
     "SubmissionSubmitRequestDto",
     "AIInteractionDto",
