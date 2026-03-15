@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Body, Path, status
+from fastapi_cache.decorator import cache
 
 from app.api.deps.database import DBDep
 from app.exceptions.excs import (
@@ -35,6 +36,7 @@ admin_router = APIRouter(prefix="/topics", tags=["Для администрац�
     status_code=status.HTTP_200_OK,
     summary="Получение списка всех тем",
 )
+@cache(expire=10)
 async def get_all_topics(db: DBDep):
     return await TopicsService(db).get_all_topics()
 
