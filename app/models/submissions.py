@@ -42,7 +42,12 @@ class SubmissionsOrm(Base):
     )
     code: Mapped[str] = mapped_column(Text, nullable=False)
     status: Mapped[SubmissionStatus] = mapped_column(
-        PgEnum(SubmissionStatus, name="submission_status", create_type=True),
+        PgEnum(
+            SubmissionStatus,
+            name="submission_status",
+            create_type=True,
+            values_callable=lambda obj: [e.value for e in obj],
+        ),
         nullable=False,
         server_default=text("'pending'"),
     )

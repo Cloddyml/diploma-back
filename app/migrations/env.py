@@ -4,6 +4,7 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 
 import app.models  # noqa: F401  # pyright: ignore[reportUnusedImport]
+from app.core.config import settings
 from app.core.database import Base  # noqa: F401  # pyright: ignore[reportUnusedImport]
 
 # this is the Alembic Config object, which provides
