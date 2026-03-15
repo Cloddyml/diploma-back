@@ -14,6 +14,10 @@ class TopicAlreadyExistsException(AIStudingException):
     detail = "Такая тема уже существует (slug должен быть уникальным)"
 
 
+class TaskAlreadyExistsException(ObjectAlreadyExistsException):
+    detail = "Такое задание уже существует"
+
+
 # --------------------- NotFoundExceptions ---------------------
 class ObjectNotFoundException(AIStudingException):
     detail = "Такого объекта не существует"
@@ -36,10 +40,18 @@ class EmptyUpdateTopicDataException(EmptyUpdateDataException):
     detail = "Нет данных для обновления темы"
 
 
+class EmptyUpdateTaskDataException(EmptyUpdateDataException):
+    detail = "Нет данных для обновления задания"
+
+
 # --------------------- CannotBeEmptyExceptions ---------------------
 class CannotBeEmptyException(AIStudingException):
     detail = "Введенное поле или поля не могут быть пустыми"
 
 
 class CannotBeEmptyTopicException(CannotBeEmptyException):
+    detail = "Введенное поле или поля не могут быть пустыми"
+
+
+class CannotBeEmptyTaskException(CannotBeEmptyException):
     detail = "Введенное поле или поля не могут быть пустыми"

@@ -16,8 +16,11 @@ class ObjectAlreadyExistsHTTPException(AIStudingHTTPException):
 
 
 class TopicAlreadyExistsHTTPException(ObjectAlreadyExistsHTTPException):
-    status_code = status.HTTP_409_CONFLICT
     detail = "Тема с таким slug уже существует"
+
+
+class TaskAlreadyExistsHTTPException(ObjectAlreadyExistsHTTPException):
+    detail = "Такое задание уже существует"
 
 
 # --------------------- NotFoundHTTPExceptions ---------------------
@@ -27,12 +30,10 @@ class ObjectNotFoundHTTPException(AIStudingHTTPException):
 
 
 class TopicNotFoundHTTPException(ObjectNotFoundHTTPException):
-    status_code = status.HTTP_404_NOT_FOUND
     detail = "Такой темы не существует"
 
 
 class TaskNotFoundHTTPException(ObjectNotFoundHTTPException):
-    status_code = status.HTTP_404_NOT_FOUND
     detail = "Задач к этой теме не существует"
 
 
@@ -43,8 +44,11 @@ class EmptyUpdateDataHTTPException(AIStudingHTTPException):
 
 
 class EmptyUpdateTopicDataHTTPException(EmptyUpdateDataHTTPException):
-    status_code = status.HTTP_422_UNPROCESSABLE_CONTENT
     detail = "Нет данных для обновления темы"
+
+
+class EmptyUpdateTaskDataHTTPException(EmptyUpdateDataHTTPException):
+    detail = "Нет данных для обновления задания"
 
 
 # --------------------- CannotBeEmptyHTTPExceptions ---------------------
@@ -54,5 +58,8 @@ class CannotBeEmptyHTTPException(AIStudingHTTPException):
 
 
 class CannotBeEmptyTopicHTTPException(CannotBeEmptyHTTPException):
-    status_code = status.HTTP_422_UNPROCESSABLE_CONTENT
+    detail = "Введенное поле или поля не могут быть пустыми"
+
+
+class CannotBeEmptyTaskHTTPException(CannotBeEmptyHTTPException):
     detail = "Введенное поле или поля не могут быть пустыми"
