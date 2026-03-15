@@ -40,7 +40,6 @@ admin_router = APIRouter(
     summary="Получение списка всех заданий к теме",
     responses=generate_responses(
         TopicNotFoundHTTPException,
-        TaskNotFoundHTTPException,
     ),
 )
 async def get_all_tasks_by_topic(
@@ -51,8 +50,6 @@ async def get_all_tasks_by_topic(
         return await TasksService(db).get_all_tasks_by_topic(topic_slug=topic_slug)
     except TopicNotFoundException:
         raise TopicNotFoundHTTPException
-    except TaskNotFoundException:
-        raise TaskNotFoundHTTPException
 
 
 @router.get(
@@ -62,7 +59,6 @@ async def get_all_tasks_by_topic(
     summary="Получение списка всех опубликованных заданий к теме",
     responses=generate_responses(
         TopicNotFoundHTTPException,
-        TaskNotFoundHTTPException,
     ),
 )
 async def get_all_published_tasks_by_topic(
@@ -75,8 +71,6 @@ async def get_all_published_tasks_by_topic(
         )
     except TopicNotFoundException:
         raise TopicNotFoundHTTPException
-    except TaskNotFoundException:
-        raise TaskNotFoundHTTPException
 
 
 @admin_router.post(
@@ -169,10 +163,10 @@ async def edit_task(
         )
     except TopicNotFoundException:
         raise TopicNotFoundHTTPException
-    except EmptyUpdateTaskDataException:
-        raise EmptyUpdateTaskDataHTTPException
     except TaskNotFoundException:
         raise TaskNotFoundHTTPException
+    except EmptyUpdateTaskDataException:
+        raise EmptyUpdateTaskDataHTTPException
     except CannotBeEmptyTaskException:
         raise CannotBeEmptyTaskHTTPException
     return SUCCESS_RESPONSE
@@ -212,10 +206,10 @@ async def partial_edit_task(
         )
     except TopicNotFoundException:
         raise TopicNotFoundHTTPException
-    except EmptyUpdateTaskDataException:
-        raise EmptyUpdateTaskDataHTTPException
     except TaskNotFoundException:
         raise TaskNotFoundHTTPException
+    except EmptyUpdateTaskDataException:
+        raise EmptyUpdateTaskDataHTTPException
     except CannotBeEmptyTaskException:
         raise CannotBeEmptyTaskHTTPException
     return SUCCESS_RESPONSE

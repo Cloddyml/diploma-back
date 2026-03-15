@@ -37,21 +37,13 @@ class TaskTestsService(BaseService):
         self, topic_slug: str, task_id: int
     ) -> list[TaskTestDto]:
         await self._resolve_task_id(topic_slug, task_id)
-        tests = await self.db.task_tests.get_tests_by_task_id(task_id=task_id)
-        if not tests:
-            raise TaskTestNotFoundException
-        return tests
+        return await self.db.task_tests.get_tests_by_task_id(task_id=task_id)
 
     async def get_visible_tests_by_task(
         self, topic_slug: str, task_id: int
     ) -> list[TaskTestDto]:
         await self._resolve_task_id(topic_slug, task_id)
-        tests: list[
-            TaskTestDto
-        ] = await self.db.task_tests.get_visible_tests_by_task_id(task_id=task_id)
-        if not tests:
-            raise TaskTestNotFoundException
-        return tests
+        return await self.db.task_tests.get_visible_tests_by_task_id(task_id=task_id)
 
     async def add_test(
         self, topic_slug: str, task_id: int, test_data: TaskTestAddRequestDto
@@ -76,6 +68,7 @@ class TaskTestsService(BaseService):
         try:
             await self.db.task_tests.edit(
                 id=test_id,
+                task_id=resolved_task_id,
                 data=test_data.model_copy(update={"task_id": resolved_task_id}),
             )
             await self.db.commit()
@@ -97,6 +90,7 @@ class TaskTestsService(BaseService):
         try:
             await self.db.task_tests.edit(
                 id=test_id,
+                task_id=resolved_task_id,
                 data=test_data.model_copy(update={"task_id": resolved_task_id}),
                 exclude_unset=True,
             )
@@ -109,9 +103,9 @@ class TaskTestsService(BaseService):
             raise CannotBeEmptyTaskTestException from ex
 
     async def delete_test(self, topic_slug: str, task_id: int, test_id: int) -> None:
-        await self._resolve_task_id(topic_slug, task_id)
+        resolved_task_id = await self._resolve_task_id(topic_slug, task_id)
         try:
-            await self.db.task_tests.delete(id=test_id)
+            await self.db.task_tests.delete(id=test_id, task_id=resolved_task_id)
             await self.db.commit()
         except ObjectNotFoundException as ex:
             raise TaskTestNotFoundException from ex

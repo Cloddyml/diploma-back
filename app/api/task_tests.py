@@ -45,7 +45,6 @@ admin_router = APIRouter(
     responses=generate_responses(
         TopicNotFoundHTTPException,
         TaskNotFoundHTTPException,
-        TaskTestNotFoundHTTPException,
     ),
 )
 async def get_all_tests_by_task(
@@ -61,8 +60,6 @@ async def get_all_tests_by_task(
         raise TopicNotFoundHTTPException
     except TaskNotFoundException:
         raise TaskNotFoundHTTPException
-    except TaskTestNotFoundException:
-        raise TaskTestNotFoundHTTPException
 
 
 @router.get(
@@ -73,7 +70,6 @@ async def get_all_tests_by_task(
     responses=generate_responses(
         TopicNotFoundHTTPException,
         TaskNotFoundHTTPException,
-        TaskTestNotFoundHTTPException,
     ),
 )
 async def get_visible_tests_by_task(
@@ -89,8 +85,6 @@ async def get_visible_tests_by_task(
         raise TopicNotFoundHTTPException
     except TaskNotFoundException:
         raise TaskNotFoundHTTPException
-    except TaskTestNotFoundException:
-        raise TaskTestNotFoundHTTPException
 
 
 @admin_router.post(
@@ -184,10 +178,10 @@ async def edit_test(
         raise TopicNotFoundHTTPException
     except TaskNotFoundException:
         raise TaskNotFoundHTTPException
-    except EmptyUpdateTaskTestDataException:
-        raise EmptyUpdateTaskTestDataHTTPException
     except TaskTestNotFoundException:
         raise TaskTestNotFoundHTTPException
+    except EmptyUpdateTaskTestDataException:
+        raise EmptyUpdateTaskTestDataHTTPException
     except CannotBeEmptyTaskTestException:
         raise CannotBeEmptyTaskTestHTTPException
     return SUCCESS_RESPONSE
@@ -239,10 +233,10 @@ async def partial_edit_test(
         raise TopicNotFoundHTTPException
     except TaskNotFoundException:
         raise TaskNotFoundHTTPException
-    except EmptyUpdateTaskTestDataException:
-        raise EmptyUpdateTaskTestDataHTTPException
     except TaskTestNotFoundException:
         raise TaskTestNotFoundHTTPException
+    except EmptyUpdateTaskTestDataException:
+        raise EmptyUpdateTaskTestDataHTTPException
     except CannotBeEmptyTaskTestException:
         raise CannotBeEmptyTaskTestHTTPException
     return SUCCESS_RESPONSE
