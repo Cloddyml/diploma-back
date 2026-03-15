@@ -14,3 +14,10 @@ class TopicAddRequestDto(BaseModel):
 class TopicDto(TopicAddRequestDto):
     id: int
     created_at: datetime
+
+
+class TopicPublishedDto(BaseModel):
+    slug: str
+    title: str
+    content: str | None = Field(None)
+    order_index: int
