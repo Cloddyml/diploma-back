@@ -49,9 +49,10 @@ class BaseRepository:
             .values(**self.mapper.map_to_persistence_entity(data))
             .returning(self.model)
         )
-        result = await self.session.execute(add_data_stmt)
-        model = result.scalars().one()
-        return self.mapper.map_to_domain_entity(model)
+        await self.session.execute(add_data_stmt)
+        # result = await self.session.execute(add_data_stmt)
+        # model = result.scalars().one()
+        # return self.mapper.map_to_domain_entity(model)
 
     async def edit(
         self, data: BaseModel, exclude_unset: bool = False, **filter_by
