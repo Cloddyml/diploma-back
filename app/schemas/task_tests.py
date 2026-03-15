@@ -7,3 +7,9 @@ class TaskTestDto(BaseModel):
     test_code: str
     is_hidden: bool = Field(False)
     order_index: int = Field(0)
+
+
+class TaskTestAddRequestDto(BaseModel):
+    test_code: str
+    is_hidden: bool = Field(False)
+    order_index: int = Field(0)

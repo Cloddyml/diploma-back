@@ -13,3 +13,7 @@ class SubmissionDto(BaseModel):
     result: str | None = Field(None)
     error: str | None = Field(None)
     created_at: datetime
+
+
+class SubmissionSubmitRequestDto(BaseModel):
+    code: str
