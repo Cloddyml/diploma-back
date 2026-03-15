@@ -14,6 +14,7 @@ dependencies = [
     { name = "pydantic", extra = ["email"] },
     { name = "pydantic-settings" },
     { name = "redis" },
+    { name = "sqlalchemy" },
     { name = "uvicorn" },
 ]
 
@@ -35,6 +36,7 @@ requires-dist = [
     { name = "pydantic", extras = ["email"], specifier = ">=2.12.5" },
     { name = "pydantic-settings", specifier = ">=2.13.1" },
     { name = "redis", specifier = ">=7.3.0" },
+    { name = "sqlalchemy", specifier = ">=2.0.48" },
     { name = "uvicorn", specifier = ">=0.41.0" },
 ]
 
