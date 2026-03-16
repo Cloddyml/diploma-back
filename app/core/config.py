@@ -26,6 +26,8 @@ class Settings(BaseSettings):
     QWEN_TEMP: float
     QWEN_MAX_TOKENS: int
 
+    CORS_ORIGINS: list[str]
+
     @property
     def DB_URL(self):
         return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"

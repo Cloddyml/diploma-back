@@ -3,11 +3,14 @@ from fastapi import FastAPI
 
 from app.core.config import settings
 from app.core.lifespan import lifespan
+from app.core.middleware import add_middleware
 from app.core.routes import add_routers
 
 app = FastAPI(
     lifespan=lifespan,
 )
+
+add_middleware(app)
 add_routers(app)
 
 
