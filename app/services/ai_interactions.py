@@ -29,6 +29,8 @@ class AIInteractionsService(BaseService):
                 max_tokens=settings.QWEN_MAX_TOKENS,
                 temperature=settings.QWEN_TEMP,
             )
+            if not response.choices:
+                raise AIServiceException
             return response.choices[0].message.content or ""
         except APITimeoutError as ex:
             raise AIExternalTimeoutException from ex
