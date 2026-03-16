@@ -7,15 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.deps.database import get_db
 from app.core.config import settings
 from app.core.database import Base
-from app.core.database_test import async_session_maker_null_pool, engine_null_pool
+from app.core.database_test import engine_null_pool
 from app.main import app
-from app.repositories import (
-    AIInteractionsRepository,
-    SubmissionsRepository,
-    TasksRepository,
-    TaskTestsRepository,
-    TopicsRepository,
-)
 from app.utils.db_manager import DBManager
 
 
@@ -45,14 +38,7 @@ async def db(setup_database) -> AsyncGenerator[DBManager, None]:
             join_transaction_mode="create_savepoint",
         )
 
-        db_manager = DBManager.__new__(DBManager)
-        db_manager.session_factory = async_session_maker_null_pool
-        db_manager.session = session
-        db_manager.ai_interactions = AIInteractionsRepository(session)
-        db_manager.submissions = SubmissionsRepository(session)
-        db_manager.tasks = TasksRepository(session)
-        db_manager.task_tests = TaskTestsRepository(session)
-        db_manager.topics = TopicsRepository(session)
+        db_manager = DBManager.from_session(session)
 
         try:
             yield db_manager
