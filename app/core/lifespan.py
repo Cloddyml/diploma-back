@@ -6,6 +6,7 @@ from fastapi_cache.backends.redis import RedisBackend
 
 from app import redis_manager
 from app.core.database import engine
+from app.core.database_celery import sync_engine
 
 
 @asynccontextmanager
@@ -14,4 +15,5 @@ async def lifespan(app: FastAPI):
     FastAPICache.init(RedisBackend(redis_manager.client), prefix="fastapi-cache")  # pyright: ignore[reportArgumentType]
     yield
     await engine.dispose()
+    sync_engine.dispose()
     await redis_manager.close()

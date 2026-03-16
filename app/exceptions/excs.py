@@ -39,6 +39,10 @@ class TaskTestNotFoundException(ObjectNotFoundException):
     detail = "Тестов к этому заданию не существует"
 
 
+class SubmissionNotFoundException(ObjectNotFoundException):
+    detail = "Такой попытки не существует"
+
+
 # --------------------- EmptyUpdateDataExceptions ---------------------
 class EmptyUpdateDataException(AIStudingException):
     detail = "Нет данных для обновления"

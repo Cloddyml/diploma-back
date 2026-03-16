@@ -5,7 +5,12 @@ from app.schemas.ai_interactions import (
     AIInteractionTopicHintRequestDto,
 )
 from app.schemas.responses import SUCCESS_RESPONSE, StatusResponse
-from app.schemas.submissions import SubmissionDto, SubmissionSubmitRequestDto
+from app.schemas.submissions import (
+    SubmissionAddDto,
+    SubmissionCreatedDto,
+    SubmissionDto,
+    SubmissionSubmitRequestDto,
+)
 from app.schemas.task_tests import (
     TaskTestAddRequestDto,
     TaskTestDto,
@@ -43,6 +48,8 @@ __all__ = [
     "TaskTestPatchRequestDto",
     "SubmissionDto",
     "SubmissionSubmitRequestDto",
+    "SubmissionAddDto",
+    "SubmissionCreatedDto",
     "AIInteractionDto",
     "AIInteractionTaskHintRequestDto",
     "AIInteractionTopicHintRequestDto",

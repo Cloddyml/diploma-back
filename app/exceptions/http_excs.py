@@ -45,6 +45,10 @@ class TaskTestNotFoundHTTPException(ObjectNotFoundHTTPException):
     detail = "Тестов к этому заданию не существует"
 
 
+class SubmissionNotFoundHTTPException(ObjectNotFoundHTTPException):
+    detail = "Такой попытки не существует"
+
+
 # --------------------- EmptyUpdateDataHTTPExceptions ---------------------
 class EmptyUpdateDataHTTPException(AIStudingHTTPException):
     status_code = status.HTTP_422_UNPROCESSABLE_CONTENT

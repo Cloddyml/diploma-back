@@ -16,4 +16,21 @@ class SubmissionDto(BaseModel):
 
 
 class SubmissionSubmitRequestDto(BaseModel):
+    """Входящие данные от пользователя при предоставлении кода"""
+
     code: str
+
+
+class SubmissionAddDto(SubmissionSubmitRequestDto):
+    """Внутренняя DTO для вставки в БД"""
+
+    task_id: int
+
+
+class SubmissionCreatedDto(BaseModel):
+    """
+    Клиент получает ID и идёт поллить GET
+    после получения ответа об успешном предоставлении кода
+    """
+
+    submission_id: int
