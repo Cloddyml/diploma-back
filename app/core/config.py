@@ -20,6 +20,12 @@ class Settings(BaseSettings):
 
     API_VERSION: str
 
+    QWEN_API_KEY: str
+    QWEN_MODEL: str
+    QWEN_BASE_URL: str
+    QWEN_TEMP: float
+    QWEN_MAX_TOKENS: int
+
     @property
     def DB_URL(self):
         return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"

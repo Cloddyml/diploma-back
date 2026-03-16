@@ -75,3 +75,21 @@ class CannotBeEmptyTaskException(CannotBeEmptyException):
 
 class CannotBeEmptyTaskTestException(CannotBeEmptyException):
     detail = "Введенное поле или поля не могут быть пустыми"
+
+
+# --------------------- ServiceException ---------------------
+class ServiceException(AIStudingException):
+    detail = "Ошибка работы сервиса"
+
+
+class AIServiceException(ServiceException):
+    detail = "Ошибка работы сервиса AI"
+
+
+# --------------------- ExternalTimeoutException ---------------------
+class ExternalTimeoutException(AIStudingException):
+    detail = "Время вышло"
+
+
+class AIExternalTimeoutException(ExternalTimeoutException):
+    detail = "Время попытки связаться с сервером AI вышло"

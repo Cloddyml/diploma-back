@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from app.api.ai_interactions import router as ai_interactions_router
 from app.api.submissions import router as submissions_router
 from app.api.task_tests import admin_router as admin_task_tests_router
 from app.api.task_tests import router as task_tests_router
@@ -16,4 +17,5 @@ routers: list[APIRouter] = [
     tasks_router,
     task_tests_router,
     submissions_router,
+    ai_interactions_router,
 ]

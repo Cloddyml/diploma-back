@@ -83,3 +83,23 @@ class CannotBeEmptyTaskHTTPException(CannotBeEmptyHTTPException):
 
 class CannotBeEmptyTaskTestHTTPException(CannotBeEmptyHTTPException):
     detail = "Введенное поле или поля не могут быть пустыми"
+
+
+# --------------------- ServiceHTTPException ---------------------
+class ServiceHTTPException(AIStudingHTTPException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    detail = "Ошибка работы сервиса"
+
+
+class AIServiceHTTPException(ServiceHTTPException):
+    detail = "Ошибка работы сервиса AI"
+
+
+# --------------------- ExternalTimeoutHTTPException ---------------------
+class ExternalTimeoutHTTPException(AIStudingHTTPException):
+    status_code = status.HTTP_504_GATEWAY_TIMEOUT
+    detail = "Время вышло"
+
+
+class AIExternalTimeoutHTTPException(ExternalTimeoutHTTPException):
+    detail = "Время попытки связаться с сервером AI вышло"

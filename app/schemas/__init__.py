@@ -1,4 +1,5 @@
 from app.schemas.ai_interactions import (
+    AIInteractionAddDto,
     AIInteractionDto,
     AIInteractionHintResponseDto,
     AIInteractionTaskHintRequestDto,
@@ -51,6 +52,7 @@ __all__ = [
     "SubmissionAddDto",
     "SubmissionCreatedDto",
     "AIInteractionDto",
+    "AIInteractionAddDto",
     "AIInteractionTaskHintRequestDto",
     "AIInteractionTopicHintRequestDto",
     "AIInteractionHintResponseDto",
