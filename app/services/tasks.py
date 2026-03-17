@@ -39,6 +39,17 @@ class TasksService(BaseService):
         tasks = await self.db.tasks.get_published_tasks_by_topic_slug(slug=topic_slug)
         return [validate_schema(task, TaskPublishedDto) for task in tasks]
 
+    async def get_published_task(
+        self, topic_slug: str, task_id: int
+    ) -> TaskPublishedDto:
+        topic_id = await self._resolve_topic_id(topic_slug)
+        task = await self.db.tasks.get_one_or_none(
+            id=task_id, topic_id=topic_id, is_published=True
+        )
+        if task is None:
+            raise TaskNotFoundException
+        return validate_schema(task, TaskPublishedDto)
+
     async def add_task(self, topic_slug: str, task_data: TaskAddRequestDto) -> None:
         topic_id = await self._resolve_topic_id(topic_slug)
         try:

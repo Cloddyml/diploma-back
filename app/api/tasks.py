@@ -73,6 +73,31 @@ async def get_all_published_tasks_by_topic(
         raise TopicNotFoundHTTPException
 
 
+@router.get(
+    "/{task_id}/published",
+    response_model=TaskPublishedDto,
+    status_code=status.HTTP_200_OK,
+    summary="Получение опубликованного задания по ID",
+    responses=generate_responses(
+        TopicNotFoundHTTPException,
+        TaskNotFoundHTTPException,
+    ),
+)
+async def get_published_task(
+    db: DBDep,
+    topic_slug: str = Path(description="Slug темы", max_length=100),
+    task_id: int = Path(description="ID задания", gt=0),
+):
+    try:
+        return await TasksService(db).get_published_task(
+            topic_slug=topic_slug, task_id=task_id
+        )
+    except TopicNotFoundException:
+        raise TopicNotFoundHTTPException
+    except TaskNotFoundException:
+        raise TaskNotFoundHTTPException
+
+
 @admin_router.post(
     "",
     response_model=StatusResponse,
