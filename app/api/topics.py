@@ -52,6 +52,25 @@ async def get_all_published_topics(db: DBDep):
     return await TopicsService(db).get_all_published_topics()
 
 
+@router.get(
+    "/{topic_slug}",
+    response_model=TopicPublishedDto,
+    status_code=status.HTTP_200_OK,
+    summary="Получение опубликованной темы по slug",
+    responses=generate_responses(
+        TopicNotFoundHTTPException,
+    ),
+)
+async def get_published_topic(
+    db: DBDep,
+    topic_slug: str = Path(description="Slug темы", max_length=100),
+):
+    try:
+        return await TopicsService(db).get_published_topic_by_slug(slug=topic_slug)
+    except TopicNotFoundException:
+        raise TopicNotFoundHTTPException
+
+
 @admin_router.post(
     "",
     response_model=StatusResponse,

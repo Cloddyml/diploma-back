@@ -28,6 +28,12 @@ class TopicsService(BaseService):
         topics = await self.db.topics.get_filtered(TopicsOrm.is_published)
         return [validate_schema(topic, TopicPublishedDto) for topic in topics]
 
+    async def get_published_topic_by_slug(self, slug: str) -> TopicPublishedDto:
+        topic = await self.db.topics.get_one_or_none(slug=slug, is_published=True)
+        if topic is None:
+            raise TopicNotFoundException
+        return validate_schema(topic, TopicPublishedDto)
+
     async def add_topic(self, topic_data: TopicAddRequestDto):
         try:
             await self.db.topics.add(topic_data)

@@ -110,6 +110,7 @@ class TopicDto(TopicAddRequestDto):
 
 
 class TopicPublishedDto(BaseModel):
+    id: int
     slug: str
     title: str
     content: str | None = Field(None)
