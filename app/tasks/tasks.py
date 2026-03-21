@@ -83,7 +83,11 @@ def run_submission(
 
     # returncode == -9: OOM killer ядра убил процесс (SIGKILL)
     # MemoryError в stderr: Python сам поймал превышение RLIMIT_AS
-    if proc.returncode == -9 or (proc.returncode != 0 and "MemoryError" in proc.stderr):
+    if (
+        proc.returncode == -9
+        or (proc.returncode != 0 and "MemoryError" in proc.stderr)
+        or (proc.returncode == -6 and "Memory allocation" in proc.stderr)
+    ):
         _update_submission(submission_id, SubmissionStatus.MEMORY_LIMIT)
         return
 

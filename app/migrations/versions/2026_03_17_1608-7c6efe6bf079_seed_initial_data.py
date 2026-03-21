@@ -152,7 +152,7 @@ def upgrade() -> None:
                 $solution${SOLUTION_CODE}$solution$,
                 1,
                 10,
-                128,
+                1024,
                 true
             );
         """)

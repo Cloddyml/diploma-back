@@ -23,7 +23,9 @@ class SubmissionsService(BaseService):
         if topic is None:
             raise TopicNotFoundException
 
-        task = await self.db.tasks.get_one_or_none(id=task_id, topic_id=topic.id)
+        task = await self.db.tasks.get_one_or_none(
+            id=task_id, topic_id=topic.id, is_published=True
+        )
         if task is None:
             raise TaskNotFoundException
 
