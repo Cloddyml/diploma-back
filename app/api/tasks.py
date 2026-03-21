@@ -21,6 +21,7 @@ from app.schemas import (
     TaskAddRequestDto,
     TaskDto,
     TaskPatchRequestDto,
+    TaskProgressPatchDto,
     TaskPublishedDto,
     TaskPutRequestDto,
 )
@@ -29,7 +30,7 @@ from app.utils.responses import generate_responses
 
 router = APIRouter(prefix="/topics/{topic_slug}/tasks", tags=["Задания"])
 admin_router = APIRouter(
-    prefix="/topics/{topic_slug}/tasks", tags=["Для администрации"]
+    prefix="/topics/{topic_slug}/tasks", tags=["Для администрации - задания"]
 )
 
 
@@ -257,6 +258,39 @@ async def delete_task(
 ):
     try:
         await TasksService(db).delete_task(task_id=task_id, topic_slug=topic_slug)
+    except TopicNotFoundException:
+        raise TopicNotFoundHTTPException
+    except TaskNotFoundException:
+        raise TaskNotFoundHTTPException
+    return SUCCESS_RESPONSE
+
+
+@router.patch(
+    "/{task_id}/progress",
+    response_model=StatusResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Отметить задание как выполненное / невыполненное",
+    responses=generate_responses(TopicNotFoundHTTPException, TaskNotFoundHTTPException),
+)
+async def mark_task_completion(
+    db: DBDep,
+    topic_slug: str = Path(description="Slug темы", max_length=100),
+    task_id: int = Path(description="ID задания", gt=0),
+    data: TaskProgressPatchDto = Body(
+        openapi_examples={
+            "1": {
+                "summary": "Отметить как выполненное",
+                "value": {"is_completed": True},
+            },
+            "2": {
+                "summary": "Снять отметку",
+                "value": {"is_completed": False},
+            },
+        }
+    ),
+):
+    try:
+        await TasksService(db).mark_task_completion(topic_slug, task_id, data)
     except TopicNotFoundException:
         raise TopicNotFoundHTTPException
     except TaskNotFoundException:

@@ -93,6 +93,7 @@ class TaskDto(BaseModel):
     time_limit_sec: int = Field(10)
     memory_limit_mb: int = Field(128)
     is_published: bool = Field(False)
+    is_completed: bool = Field(False)
     created_at: datetime
 
 
@@ -104,3 +105,8 @@ class TaskPublishedDto(BaseModel):
     order_index: int = Field(0)
     time_limit_sec: int = Field(10)
     memory_limit_mb: int = Field(128)
+    is_completed: bool
+
+
+class TaskProgressPatchDto(BaseModel):
+    is_completed: bool

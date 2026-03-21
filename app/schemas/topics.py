@@ -107,6 +107,7 @@ class TopicPatchRequestDto(BaseModel):
 class TopicDto(TopicAddRequestDto):
     id: int
     created_at: datetime
+    is_completed: bool = Field(False)
 
 
 class TopicPublishedDto(BaseModel):
@@ -115,3 +116,8 @@ class TopicPublishedDto(BaseModel):
     title: str
     content: str | None = Field(None)
     order_index: int
+    is_completed: bool
+
+
+class TopicProgressPatchDto(BaseModel):
+    is_completed: bool

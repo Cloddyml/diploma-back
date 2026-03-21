@@ -33,7 +33,7 @@ router = APIRouter(
 )
 admin_router = APIRouter(
     prefix="/topics/{topic_slug}/tasks/{task_id}/tests",
-    tags=["Для администрации"],
+    tags=["Для администрации - тесты"],
 )
 
 

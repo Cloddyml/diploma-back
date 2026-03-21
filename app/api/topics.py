@@ -20,6 +20,7 @@ from app.schemas import (
     TopicAddRequestDto,
     TopicDto,
     TopicPatchRequestDto,
+    TopicProgressPatchDto,
     TopicPublishedDto,
     TopicPutRequestDto,
 )
@@ -27,7 +28,7 @@ from app.services import TopicsService
 from app.utils.responses import generate_responses
 
 router = APIRouter(prefix="/topics", tags=["Темы"])
-admin_router = APIRouter(prefix="/topics", tags=["Для администрации"])
+admin_router = APIRouter(prefix="/topics", tags=["Для администрации - темы"])
 
 
 @admin_router.get(
@@ -211,6 +212,36 @@ async def delete_topic(
 ):
     try:
         await TopicsService(db).delete_topic(topic_id=topic_id)
+    except TopicNotFoundException:
+        raise TopicNotFoundHTTPException
+    return SUCCESS_RESPONSE
+
+
+@router.patch(
+    "/{topic_slug}/progress",
+    response_model=StatusResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Отметить тему как выполненную / невыполненную",
+    responses=generate_responses(TopicNotFoundHTTPException),
+)
+async def mark_topic_completion(
+    db: DBDep,
+    topic_slug: str = Path(description="Slug темы", max_length=100),
+    data: TopicProgressPatchDto = Body(
+        openapi_examples={
+            "1": {
+                "summary": "Отметить как выполненную",
+                "value": {"is_completed": True},
+            },
+            "2": {
+                "summary": "Снять отметку",
+                "value": {"is_completed": False},
+            },
+        }
+    ),
+):
+    try:
+        await TopicsService(db).mark_topic_completion(topic_slug, data)
     except TopicNotFoundException:
         raise TopicNotFoundHTTPException
     return SUCCESS_RESPONSE

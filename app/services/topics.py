@@ -13,6 +13,7 @@ from app.schemas import (
     TopicAddRequestDto,
     TopicDto,
     TopicPatchRequestDto,
+    TopicProgressPatchDto,
     TopicPublishedDto,
     TopicPutRequestDto,
 )
@@ -74,6 +75,18 @@ class TopicsService(BaseService):
     async def delete_topic(self, topic_id: int):
         try:
             await self.db.topics.delete(id=topic_id)
+            await self.db.commit()
+        except ObjectNotFoundException as ex:
+            raise TopicNotFoundException from ex
+
+    async def mark_topic_completion(
+        self, topic_slug: str, data: TopicProgressPatchDto
+    ) -> None:
+        topic = await self.db.topics.get_one_or_none(slug=topic_slug, is_published=True)
+        if topic is None:
+            raise TopicNotFoundException
+        try:
+            await self.db.topics.edit(id=topic.id, data=data, exclude_unset=False)
             await self.db.commit()
         except ObjectNotFoundException as ex:
             raise TopicNotFoundException from ex

@@ -14,6 +14,7 @@ from app.schemas import (
     TaskAddRequestDto,
     TaskDto,
     TaskPatchRequestDto,
+    TaskProgressPatchDto,
     TaskPublishedDto,
     TaskPutRequestDto,
 )
@@ -97,6 +98,21 @@ class TasksService(BaseService):
         topic_id = await self._resolve_topic_id(topic_slug)
         try:
             await self.db.tasks.delete(id=task_id, topic_id=topic_id)
+            await self.db.commit()
+        except ObjectNotFoundException as ex:
+            raise TaskNotFoundException from ex
+
+    async def mark_task_completion(
+        self, topic_slug: str, task_id: int, data: TaskProgressPatchDto
+    ) -> None:
+        topic_id = await self._resolve_topic_id(topic_slug)
+        task = await self.db.tasks.get_one_or_none(
+            id=task_id, topic_id=topic_id, is_published=True
+        )
+        if task is None:
+            raise TaskNotFoundException
+        try:
+            await self.db.tasks.edit(id=task_id, data=data, exclude_unset=False)
             await self.db.commit()
         except ObjectNotFoundException as ex:
             raise TaskNotFoundException from ex

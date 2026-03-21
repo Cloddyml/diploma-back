@@ -22,6 +22,7 @@ from app.schemas.tasks import (
     TaskAddRequestDto,
     TaskDto,
     TaskPatchRequestDto,
+    TaskProgressPatchDto,
     TaskPublishedDto,
     TaskPutRequestDto,
 )
@@ -29,6 +30,7 @@ from app.schemas.topics import (
     TopicAddRequestDto,
     TopicDto,
     TopicPatchRequestDto,
+    TopicProgressPatchDto,
     TopicPublishedDto,
     TopicPutRequestDto,
 )
@@ -38,6 +40,7 @@ __all__ = [
     "TopicAddRequestDto",
     "TopicPutRequestDto",
     "TopicPatchRequestDto",
+    "TopicProgressPatchDto",
     "TaskPublishedDto",
     "TaskDto",
     "TaskAddRequestDto",
@@ -47,6 +50,7 @@ __all__ = [
     "TaskTestAddRequestDto",
     "TaskTestPutRequestDto",
     "TaskTestPatchRequestDto",
+    "TaskProgressPatchDto",
     "SubmissionDto",
     "SubmissionSubmitRequestDto",
     "SubmissionAddDto",
