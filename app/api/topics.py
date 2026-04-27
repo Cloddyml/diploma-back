@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Body, Path, status
+from fastapi import APIRouter, Body, Path, Query, status
 from fastapi_cache.decorator import cache
 
 from app.api.deps.database import DBDep
@@ -49,8 +49,14 @@ async def get_all_topics(db: DBDep) -> list[TopicDto]:
     status_code=status.HTTP_200_OK,
     summary="Получение списка всех опубликованных тем",
 )
-async def get_all_published_topics(db: DBDep):
-    return await TopicsService(db).get_all_published_topics()
+async def get_all_published_topics(
+    db: DBDep,
+    is_interview: bool | None = Query(
+        None,
+        description="Фильтр: false — учебные темы, true — вопросы для собеседований",
+    ),
+):
+    return await TopicsService(db).get_all_published_topics(is_interview=is_interview)
 
 
 @router.get(
@@ -86,23 +92,25 @@ async def add_new_topic(
     topic_data: TopicAddRequestDto = Body(
         openapi_examples={
             "1": {
-                "summary": "Тема 1",
+                "summary": "Учебная тема",
                 "value": {
                     "slug": "pytorch",
                     "title": "Библиотека PyTorch",
                     "content": "",
                     "order_index": 1,
                     "is_published": False,
+                    "is_interview": False,
                 },
             },
             "2": {
-                "summary": "Тема 2",
+                "summary": "Тема для собеседований",
                 "value": {
-                    "slug": "Pandas",
-                    "title": "Библиотека Pandas",
+                    "slug": "interview-graphs",
+                    "title": "Графы",
                     "content": "",
-                    "order_index": 2,
+                    "order_index": 1,
                     "is_published": True,
+                    "is_interview": True,
                 },
             },
         }
@@ -134,11 +142,12 @@ async def edit_topic(
             "1": {
                 "summary": "Тема 1",
                 "value": {
-                    "slug": "some libRary",
-                    "title": "Еще библиотека",
+                    "slug": "some-library",
+                    "title": "Ещё библиотека",
                     "content": "",
                     "order_index": 6,
                     "is_published": True,
+                    "is_interview": False,
                 },
             },
         }
@@ -174,8 +183,8 @@ async def partial_edit_topic(
             "1": {
                 "summary": "Тема 1",
                 "value": {
-                    "slug": "some libRary",
-                    "title": "Еще библиотека",
+                    "slug": "some-library",
+                    "title": "Ещё библиотека",
                     "content": "",
                     "order_index": 6,
                     "is_published": True,

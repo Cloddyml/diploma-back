@@ -28,8 +28,13 @@ class TopicsService(BaseService):
     async def get_all_topics(self) -> list[TopicDto]:
         return await self.db.topics.get_all()
 
-    async def get_all_published_topics(self) -> list[TopicPublishedDto]:
-        topics = await self.db.topics.get_filtered(TopicsOrm.is_published)
+    async def get_all_published_topics(
+        self, is_interview: bool | None = None
+    ) -> list[TopicPublishedDto]:
+        kwargs: dict = {}
+        if is_interview is not None:
+            kwargs["is_interview"] = is_interview
+        topics = await self.db.topics.get_filtered(TopicsOrm.is_published, **kwargs)
         return [validate_schema(topic, TopicPublishedDto) for topic in topics]
 
     async def get_published_topic_by_slug(self, slug: str) -> TopicPublishedDto:

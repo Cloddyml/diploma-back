@@ -11,6 +11,7 @@ class TopicAddRequestDto(BaseModel):
     content: str | None = Field(None)
     order_index: int = Field(0, ge=0)
     is_published: bool = Field(False)
+    is_interview: bool = Field(False)
 
     @field_validator("slug", "title", mode="before")
     @classmethod
@@ -45,6 +46,7 @@ class TopicPutRequestDto(BaseModel):
     content: str | None = Field(None)
     order_index: int = Field(ge=0)
     is_published: bool
+    is_interview: bool = Field(False)
 
     @field_validator("slug", "title", mode="before")
     @classmethod
@@ -79,6 +81,7 @@ class TopicPatchRequestDto(BaseModel):
     content: str | None = Field(None)
     order_index: int | None = Field(None, ge=0)
     is_published: bool | None = Field(None)
+    is_interview: bool | None = Field(None)
 
     @field_validator("slug", "title", "content", mode="before")
     @classmethod
@@ -117,6 +120,7 @@ class TopicPublishedDto(BaseModel):
     content: str | None = Field(None)
     order_index: int
     is_completed: bool
+    is_interview: bool
 
 
 class TopicProgressPatchDto(BaseModel):
