@@ -5,6 +5,7 @@ from app.schemas.ai_interactions import (
     AIInteractionTaskHintRequestDto,
     AIInteractionTopicHintRequestDto,
 )
+from app.schemas.progress import DailyStatDto, ProgressResponseDto
 from app.schemas.responses import SUCCESS_RESPONSE, StatusResponse
 from app.schemas.submissions import (
     SubmissionAddDto,
@@ -23,6 +24,7 @@ from app.schemas.tasks import (
     TaskDto,
     TaskPatchRequestDto,
     TaskProgressPatchDto,
+    TaskProgressUpdateDto,
     TaskPublishedDto,
     TaskPutRequestDto,
 )
@@ -31,6 +33,7 @@ from app.schemas.topics import (
     TopicDto,
     TopicPatchRequestDto,
     TopicProgressPatchDto,
+    TopicProgressUpdateDto,
     TopicPublishedDto,
     TopicPutRequestDto,
 )
@@ -41,16 +44,18 @@ __all__ = [
     "TopicPutRequestDto",
     "TopicPatchRequestDto",
     "TopicProgressPatchDto",
+    "TopicProgressUpdateDto",
     "TaskPublishedDto",
     "TaskDto",
     "TaskAddRequestDto",
     "TaskPutRequestDto",
     "TaskPatchRequestDto",
+    "TaskProgressPatchDto",
+    "TaskProgressUpdateDto",
     "TaskTestDto",
     "TaskTestAddRequestDto",
     "TaskTestPutRequestDto",
     "TaskTestPatchRequestDto",
-    "TaskProgressPatchDto",
     "SubmissionDto",
     "SubmissionSubmitRequestDto",
     "SubmissionAddDto",
@@ -63,4 +68,6 @@ __all__ = [
     "TopicPublishedDto",
     "StatusResponse",
     "SUCCESS_RESPONSE",
+    "DailyStatDto",
+    "ProgressResponseDto",
 ]

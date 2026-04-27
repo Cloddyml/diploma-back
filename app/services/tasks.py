@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from app.exceptions.excs import (
     CannotBeEmptyException,
     CannotBeEmptyTaskException,
@@ -15,6 +17,7 @@ from app.schemas import (
     TaskDto,
     TaskPatchRequestDto,
     TaskProgressPatchDto,
+    TaskProgressUpdateDto,
     TaskPublishedDto,
     TaskPutRequestDto,
 )
@@ -111,8 +114,14 @@ class TasksService(BaseService):
         )
         if task is None:
             raise TaskNotFoundException
+
+        update_dto = TaskProgressUpdateDto(
+            is_completed=data.is_completed,
+            completed_at=datetime.now(timezone.utc) if data.is_completed else None,
+        )
+
         try:
-            await self.db.tasks.edit(id=task_id, data=data, exclude_unset=False)
+            await self.db.tasks.edit(id=task_id, data=update_dto, exclude_unset=False)
             await self.db.commit()
         except ObjectNotFoundException as ex:
             raise TaskNotFoundException from ex

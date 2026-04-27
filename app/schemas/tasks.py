@@ -110,3 +110,8 @@ class TaskPublishedDto(BaseModel):
 
 class TaskProgressPatchDto(BaseModel):
     is_completed: bool
+
+
+class TaskProgressUpdateDto(BaseModel):
+    is_completed: bool
+    completed_at: datetime | None

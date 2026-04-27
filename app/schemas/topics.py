@@ -42,7 +42,7 @@ class TopicAddRequestDto(BaseModel):
 class TopicPutRequestDto(BaseModel):
     slug: Annotated[str, StringConstraints(max_length=100, to_lower=True)]
     title: str = Field(max_length=255)
-    content: str | None = Field(None)  # ← исправлено
+    content: str | None = Field(None)
     order_index: int = Field(ge=0)
     is_published: bool
 
@@ -121,3 +121,8 @@ class TopicPublishedDto(BaseModel):
 
 class TopicProgressPatchDto(BaseModel):
     is_completed: bool
+
+
+class TopicProgressUpdateDto(BaseModel):
+    is_completed: bool
+    completed_at: datetime | None

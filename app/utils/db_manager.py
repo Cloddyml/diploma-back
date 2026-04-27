@@ -2,6 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.repositories import (
     AIInteractionsRepository,
+    ProgressRepository,
     SubmissionsRepository,
     TasksRepository,
     TaskTestsRepository,
@@ -20,6 +21,7 @@ class DBManager:
         self.tasks = TasksRepository(session)
         self.task_tests = TaskTestsRepository(session)
         self.topics = TopicsRepository(session)
+        self.progress = ProgressRepository(session)
 
     @classmethod
     def from_session(cls, session: AsyncSession) -> "DBManager":
@@ -35,6 +37,7 @@ class DBManager:
         self.tasks = TasksRepository(self.session)  # pyright: ignore[reportUnannotatedClassAttribute, reportUninitializedInstanceVariable]
         self.task_tests = TaskTestsRepository(self.session)  # pyright: ignore[reportUnannotatedClassAttribute, reportUninitializedInstanceVariable]
         self.topics = TopicsRepository(self.session)  # pyright: ignore[reportUnannotatedClassAttribute, reportUninitializedInstanceVariable]
+        self.progress = ProgressRepository(self.session)  # pyright: ignore[reportUnannotatedClassAttribute, reportUninitializedInstanceVariable]
 
         return self
 

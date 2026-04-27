@@ -1,4 +1,5 @@
 from app.repositories.ai_interactions import AIInteractionsRepository
+from app.repositories.progress import ProgressRepository
 from app.repositories.submissions import SubmissionsRepository
 from app.repositories.task_tests import TaskTestsRepository
 from app.repositories.tasks import TasksRepository
@@ -10,4 +11,5 @@ __all__ = [
     "TaskTestsRepository",
     "TasksRepository",
     "TopicsRepository",
+    "ProgressRepository",
 ]

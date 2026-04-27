@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from app.exceptions.excs import (
     CannotBeEmptyException,
     CannotBeEmptyTopicException,
@@ -14,6 +16,7 @@ from app.schemas import (
     TopicDto,
     TopicPatchRequestDto,
     TopicProgressPatchDto,
+    TopicProgressUpdateDto,
     TopicPublishedDto,
     TopicPutRequestDto,
 )
@@ -85,8 +88,14 @@ class TopicsService(BaseService):
         topic = await self.db.topics.get_one_or_none(slug=topic_slug, is_published=True)
         if topic is None:
             raise TopicNotFoundException
+
+        update_dto = TopicProgressUpdateDto(
+            is_completed=data.is_completed,
+            completed_at=datetime.now(timezone.utc) if data.is_completed else None,
+        )
+
         try:
-            await self.db.topics.edit(id=topic.id, data=data, exclude_unset=False)
+            await self.db.topics.edit(id=topic.id, data=update_dto, exclude_unset=False)
             await self.db.commit()
         except ObjectNotFoundException as ex:
             raise TopicNotFoundException from ex
