@@ -38,7 +38,7 @@ import numpy as np
 a = np.array([1, 2, 3, 4, 5])
 print(a)        # [1 2 3 4 5]
 print(a.shape)  # (5,)
-print(a.dtype)  # int64
+print(a.dtype)  # например, int64 (на 32-битных системах и Windows может быть int32)
 ```
 
 ## Полезные операции
@@ -167,7 +167,4 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    op.execute("""
-            TRUNCATE TABLE ai_interactions, task_tests, submissions, tasks, topics
-            RESTART IDENTITY CASCADE;
-        """)
+    op.execute("DELETE FROM topics WHERE slug = 'numpy';")

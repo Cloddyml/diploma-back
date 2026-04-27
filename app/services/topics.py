@@ -43,7 +43,7 @@ class TopicsService(BaseService):
             raise TopicNotFoundException
         return validate_schema(topic, TopicPublishedDto)
 
-    async def add_topic(self, topic_data: TopicAddRequestDto):
+    async def add_topic(self, topic_data: TopicAddRequestDto) -> None:
         try:
             await self.db.topics.add(topic_data)
             await self.db.commit()
@@ -54,7 +54,7 @@ class TopicsService(BaseService):
         self,
         topic_id: int,
         topic_data: TopicPutRequestDto,
-    ):
+    ) -> None:
         try:
             await self.db.topics.edit(id=topic_id, data=topic_data)
             await self.db.commit()
@@ -69,7 +69,7 @@ class TopicsService(BaseService):
         self,
         topic_id: int,
         topic_data: TopicPatchRequestDto,
-    ):
+    ) -> None:
         try:
             await self.db.topics.edit(id=topic_id, data=topic_data, exclude_unset=True)
             await self.db.commit()
@@ -80,7 +80,7 @@ class TopicsService(BaseService):
         except CannotBeEmptyException as ex:
             raise CannotBeEmptyTopicException from ex
 
-    async def delete_topic(self, topic_id: int):
+    async def delete_topic(self, topic_id: int) -> None:
         try:
             await self.db.topics.delete(id=topic_id)
             await self.db.commit()

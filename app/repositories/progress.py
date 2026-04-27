@@ -1,17 +1,14 @@
 from datetime import date, datetime, timedelta, timezone
 
 from sqlalchemy import case, func, select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.submissions import SubmissionsOrm, SubmissionStatus
 from app.models.tasks import TasksOrm
+from app.repositories.base import RepositoryBase
 from app.schemas.progress import DailyStatDto
 
 
-class ProgressRepository:
-    def __init__(self, session: AsyncSession) -> None:
-        self.session = session
-
+class ProgressRepository(RepositoryBase):
     async def get_daily_stats(self, days: int = 30) -> list[DailyStatDto]:
         since = datetime.now(timezone.utc) - timedelta(days=days)
 

@@ -17,13 +17,18 @@ from app.exceptions.excs import (
 from app.repositories.mappers.base import DataMapper
 
 
-class BaseRepository:
-    model: type[Base]  # pyright: ignore[reportUninitializedInstanceVariable]  # noqa: UP006
-    mapper: type[DataMapper]  # pyright: ignore[reportUninitializedInstanceVariable]  # noqa: UP006
+class RepositoryBase:
+    """Общий родитель для всех репозиториев. Хранит ссылку на сессию."""
+
     session: AsyncSession
 
     def __init__(self, session: AsyncSession):
         self.session = session
+
+
+class BaseRepository(RepositoryBase):
+    model: type[Base]  # pyright: ignore[reportUninitializedInstanceVariable]  # noqa: UP006
+    mapper: type[DataMapper]  # pyright: ignore[reportUninitializedInstanceVariable]  # noqa: UP006
 
     async def get_filtered(self, *filters, **filter_by) -> list[BaseModel | Any]:
         query = select(self.model).filter(*filters).filter_by(**filter_by)
@@ -51,22 +56,20 @@ class BaseRepository:
 
         return self.mapper.map_to_domain_entity(model)
 
-    async def add(self, data: BaseModel) -> None:
+    async def add(self, data: BaseModel) -> int:
         add_data_stmt = (
             insert(self.model)
             .values(**self.mapper.map_to_persistence_entity(data))
-            .returning(self.model)
+            .returning(self.model.id)
         )
         try:
-            await self.session.execute(add_data_stmt)
+            result = await self.session.execute(add_data_stmt)
         except IntegrityError as ex:
             if isinstance(ex.orig.__cause__, UniqueViolationError):
                 raise ObjectAlreadyExistsException from ex
             else:
                 raise ex
-        # result = await self.session.execute(add_data_stmt)
-        # model = result.scalars().one()
-        # return self.mapper.map_to_domain_entity(model)
+        return result.scalar_one()
 
     async def edit(
         self,

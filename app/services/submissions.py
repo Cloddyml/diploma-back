@@ -46,7 +46,7 @@ class SubmissionsService(BaseService):
         test_codes = [test.test_code for test in tests]
 
         add_dto = SubmissionAddDto(task_id=task.id, code=submit_data.code)
-        new_submission_id = await self.db.submissions.add_and_return_id(add_dto)
+        new_submission_id = await self.db.submissions.add(add_dto)
 
         await self.db.commit()
 

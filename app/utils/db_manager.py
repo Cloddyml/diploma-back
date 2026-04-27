@@ -30,15 +30,7 @@ class DBManager:
         return instance
 
     async def __aenter__(self):
-        self.session = self.session_factory()  # pyright: ignore[reportUnannotatedClassAttribute, reportUninitializedInstanceVariable]
-
-        self.ai_interactions = AIInteractionsRepository(self.session)  # pyright: ignore[reportUnannotatedClassAttribute, reportUninitializedInstanceVariable]
-        self.submissions = SubmissionsRepository(self.session)  # pyright: ignore[reportUnannotatedClassAttribute, reportUninitializedInstanceVariable]
-        self.tasks = TasksRepository(self.session)  # pyright: ignore[reportUnannotatedClassAttribute, reportUninitializedInstanceVariable]
-        self.task_tests = TaskTestsRepository(self.session)  # pyright: ignore[reportUnannotatedClassAttribute, reportUninitializedInstanceVariable]
-        self.topics = TopicsRepository(self.session)  # pyright: ignore[reportUnannotatedClassAttribute, reportUninitializedInstanceVariable]
-        self.progress = ProgressRepository(self.session)  # pyright: ignore[reportUnannotatedClassAttribute, reportUninitializedInstanceVariable]
-
+        self._setup_repositories(self.session_factory())
         return self
 
     async def __aexit__(self, *args):

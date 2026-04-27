@@ -841,5 +841,6 @@ def downgrade() -> None:
     """)
     op.execute("""
         DELETE FROM tasks
-        WHERE title IN ('Статистика массива', 'Транспонирование матрицы');
+        WHERE topic_id = (SELECT id FROM topics WHERE slug = 'numpy')
+          AND title IN ('Статистика массива', 'Транспонирование матрицы');
     """)
