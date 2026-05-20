@@ -6,4 +6,5 @@ T = TypeVar("T", bound=BaseModel)
 
 
 def validate_schema(data: BaseModel, schema_to: type[T]) -> T:
-    return schema_to.model_validate(data.model_dump())
+    """Преобразует одну Pydantic-схему в другую за один проход по атрибутам."""
+    return schema_to.model_validate(data, from_attributes=True)

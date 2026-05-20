@@ -1,4 +1,5 @@
 import json
+import logging
 import resource
 import subprocess
 import sys
@@ -6,8 +7,12 @@ import sys
 from sqlalchemy import update
 
 from app.core.database_celery import sync_session_factory
+from app.core.logging import setup_logging
 from app.models.submissions import SubmissionsOrm, SubmissionStatus
 from app.tasks.celery_app import celery_instance
+
+setup_logging()
+logger = logging.getLogger(__name__)
 
 
 def _set_memory_limit(memory_limit_mb: int) -> None:
@@ -65,6 +70,13 @@ def run_submission(
     time_limit_sec: int,
     memory_limit_mb: int,
 ) -> None:
+    logger.info(
+        "Submission %s started (tests=%d, time=%ds, memory=%dMB)",
+        submission_id,
+        len(test_codes),
+        time_limit_sec,
+        memory_limit_mb,
+    )
     _update_submission(submission_id, SubmissionStatus.RUNNING)
 
     script = _build_runner_script(user_code, test_codes)
@@ -78,6 +90,7 @@ def run_submission(
             preexec_fn=lambda: _set_memory_limit(memory_limit_mb),
         )
     except subprocess.TimeoutExpired:
+        logger.warning("Submission %s hit TIME_LIMIT (%ds)", submission_id, time_limit_sec)
         _update_submission(submission_id, SubmissionStatus.TIME_LIMIT)
         return
 
@@ -88,10 +101,18 @@ def run_submission(
         or (proc.returncode != 0 and "MemoryError" in proc.stderr)
         or (proc.returncode == -6 and "Memory allocation" in proc.stderr)
     ):
+        logger.warning(
+            "Submission %s hit MEMORY_LIMIT (%dMB)", submission_id, memory_limit_mb
+        )
         _update_submission(submission_id, SubmissionStatus.MEMORY_LIMIT)
         return
 
     if proc.returncode != 0:
+        logger.info(
+            "Submission %s runtime error (returncode=%d)",
+            submission_id,
+            proc.returncode,
+        )
         _update_submission(
             submission_id,
             SubmissionStatus.RUNTIME_ERROR,
@@ -101,23 +122,37 @@ def run_submission(
 
     try:
         results: list[dict] = json.loads(proc.stdout)
-    except Exception:
+    except Exception as ex:
+        logger.error(
+            "Submission %s failed to parse runner output: %s\nstdout=%r\nstderr=%r",
+            submission_id,
+            ex,
+            proc.stdout[:500],
+            proc.stderr[:500],
+        )
         _update_submission(
             submission_id,
             SubmissionStatus.INTERNAL_ERROR,
-            error="Failed to parse runner output",
+            error=f"Failed to parse runner output: {ex}\nstderr: {proc.stderr[:1000]}",
         )
         return
 
     failed = [r for r in results if not r["passed"]]
 
     if failed:
+        logger.info(
+            "Submission %s wrong answer (%d/%d failed)",
+            submission_id,
+            len(failed),
+            len(results),
+        )
         _update_submission(
             submission_id,
             SubmissionStatus.WRONG_ANSWER,
             result=json.dumps(failed, ensure_ascii=False),
         )
     else:
+        logger.info("Submission %s accepted (%d tests)", submission_id, len(results))
         _update_submission(
             submission_id,
             SubmissionStatus.ACCEPTED,

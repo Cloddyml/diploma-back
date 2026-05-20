@@ -1,6 +1,6 @@
-import enum
 import typing
 from datetime import datetime
+from enum import StrEnum
 
 from sqlalchemy import DateTime, Enum as PgEnum, ForeignKey, Integer, Text, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -11,7 +11,7 @@ if typing.TYPE_CHECKING:
     from app.models.tasks import TasksOrm
 
 
-class SubmissionStatus(str, enum.Enum):
+class SubmissionStatus(StrEnum):
     """Статусы жизненного цикла попытки выполнения кода."""
 
     PENDING = "pending"  # В очереди Celery
