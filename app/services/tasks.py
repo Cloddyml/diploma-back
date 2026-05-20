@@ -1,25 +1,14 @@
 from datetime import datetime, timezone
 
 from app.exceptions.excs import (
-    CannotBeEmptyException,
-    CannotBeEmptyTaskException,
-    EmptyUpdateDataException,
-    EmptyUpdateTaskDataException,
-    ObjectAlreadyExistsException,
     ObjectNotFoundException,
-    TaskAlreadyExistsException,
     TaskNotFoundException,
     TopicNotFoundException,
 )
-from app.models import TasksOrm
 from app.schemas import (
-    TaskAddRequestDto,
-    TaskDto,
-    TaskPatchRequestDto,
     TaskProgressPatchDto,
     TaskProgressUpdateDto,
     TaskPublishedDto,
-    TaskPutRequestDto,
 )
 from app.services.base import BaseService
 from app.utils.schema_validation import validate_schema
@@ -27,14 +16,12 @@ from app.utils.schema_validation import validate_schema
 
 class TasksService(BaseService):
     async def _resolve_topic_id(self, topic_slug: str) -> int:
-        topic = await self.db.topics.get_one_or_none(slug=topic_slug)
+        topic = await self.db.topics.get_one_or_none(
+            slug=topic_slug, is_published=True
+        )
         if topic is None:
             raise TopicNotFoundException
         return topic.id
-
-    async def get_all_tasks_by_topic(self, topic_slug: str) -> list[TaskDto]:
-        await self._resolve_topic_id(topic_slug)
-        return await self.db.tasks.get_all_tasks_by_topic_slug(slug=topic_slug)
 
     async def get_all_published_tasks_by_topic(
         self, topic_slug: str
@@ -53,57 +40,6 @@ class TasksService(BaseService):
         if task is None:
             raise TaskNotFoundException
         return validate_schema(task, TaskPublishedDto)
-
-    async def add_task(self, topic_slug: str, task_data: TaskAddRequestDto) -> None:
-        topic_id = await self._resolve_topic_id(topic_slug)
-        try:
-            await self.db.tasks.add(task_data.model_copy(update={"topic_id": topic_id}))
-            await self.db.commit()
-        except ObjectAlreadyExistsException as ex:
-            raise TaskAlreadyExistsException from ex
-
-    async def edit_task(
-        self, task_id: int, topic_slug: str, task_data: TaskPutRequestDto
-    ) -> None:
-        topic_id = await self._resolve_topic_id(topic_slug)
-        try:
-            await self.db.tasks.edit(
-                id=task_id,
-                data=task_data.model_copy(update={"topic_id": topic_id}),
-            )
-            await self.db.commit()
-        except EmptyUpdateDataException as ex:
-            raise EmptyUpdateTaskDataException from ex
-        except ObjectNotFoundException as ex:
-            raise TaskNotFoundException from ex
-        except CannotBeEmptyException as ex:
-            raise CannotBeEmptyTaskException from ex
-
-    async def partial_edit_task(
-        self, task_id: int, topic_slug: str, task_data: TaskPatchRequestDto
-    ) -> None:
-        topic_id = await self._resolve_topic_id(topic_slug)
-        try:
-            await self.db.tasks.edit(
-                id=task_id,
-                data=task_data.model_copy(update={"topic_id": topic_id}),
-                exclude_unset=True,
-            )
-            await self.db.commit()
-        except EmptyUpdateDataException as ex:
-            raise EmptyUpdateTaskDataException from ex
-        except ObjectNotFoundException as ex:
-            raise TaskNotFoundException from ex
-        except CannotBeEmptyException as ex:
-            raise CannotBeEmptyTaskException from ex
-
-    async def delete_task(self, task_id: int, topic_slug: str) -> None:
-        topic_id = await self._resolve_topic_id(topic_slug)
-        try:
-            await self.db.tasks.delete(id=task_id, topic_id=topic_id)
-            await self.db.commit()
-        except ObjectNotFoundException as ex:
-            raise TaskNotFoundException from ex
 
     async def mark_task_completion(
         self, topic_slug: str, task_id: int, data: TaskProgressPatchDto

@@ -2,16 +2,7 @@ import enum
 import typing
 from datetime import datetime
 
-from sqlalchemy import (
-    DateTime,
-    ForeignKey,
-    Integer,
-    Text,
-    text,
-)
-from sqlalchemy import (
-    Enum as PgEnum,
-)
+from sqlalchemy import DateTime, Enum as PgEnum, ForeignKey, Integer, Text, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base

@@ -16,10 +16,10 @@ from app.tasks.tasks import run_submission
 
 class SubmissionsService(BaseService):
     async def _resolve_task(self, topic_slug: str, task_id: int):
-        """
-        Проверяет существование темы и задачи, возвращает TaskDto.
-        """
-        topic = await self.db.topics.get_one_or_none(slug=topic_slug)
+        """Проверяет существование темы и задачи, возвращает ORM-задачу."""
+        topic = await self.db.topics.get_one_or_none(
+            slug=topic_slug, is_published=True
+        )
         if topic is None:
             raise TopicNotFoundException
 
@@ -37,9 +37,7 @@ class SubmissionsService(BaseService):
         task_id: int,
         submit_data: SubmissionSubmitRequestDto,
     ) -> SubmissionCreatedDto:
-        """
-        Создаёт submission в БД и ставит Celery-задачу в очередь.
-        """
+        """Создаёт submission в БД и ставит Celery-задачу в очередь."""
         task = await self._resolve_task(topic_slug, task_id)
 
         tests = await self.db.task_tests.get_tests_by_task_id(task_id=task.id)
@@ -61,9 +59,7 @@ class SubmissionsService(BaseService):
         return SubmissionCreatedDto(submission_id=new_submission_id)
 
     async def get_submission(self, submission_id: int) -> SubmissionDto:
-        """
-        Возвращает текущее состояние submission.
-        """
+        """Возвращает текущее состояние submission."""
         try:
             return await self.db.submissions.get_one(id=submission_id)
         except ObjectNotFoundException as ex:
